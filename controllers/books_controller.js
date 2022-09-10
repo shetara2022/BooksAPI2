@@ -1,6 +1,6 @@
 const express = require('express')
 const books = express.Router()
-const Book = ('../models/books')
+const Book = require('../models/books')
 
 books.get('/seed', (req, res) => {
     Book.insertMany([{
@@ -52,8 +52,9 @@ books.get('/', (req, res) => {
 })
 
 books.get('/:id', (req, res) => {
-    res.json({
-      //should respond with a single book 
+    Book.find()
+        .then(foundBooks => {
+            res.json(foundBooks)
     })
     .catch(err => {
         console.log(err)
@@ -62,11 +63,12 @@ books.get('/:id', (req, res) => {
 })
 
 
-//Patch Route
-books.patch('/:id', (req, res) => {
-    res.json({
-        
-    })
+//Put/Patch Route
+books.put('/:id', (req, res) => {
+    Book.findOne()
+        .then(foundBooks => {
+            res.json(foundBooks)
+        })
     .catch(err => {
         console.log(err)
         res.render('error404')
@@ -75,8 +77,9 @@ books.patch('/:id', (req, res) => {
 
 //Post Route
 books.post('/', (req, res) => {
-    res.json({
-
+    Book.create(req.body)
+        .then(() => {
+        res.json(foundBooks)
     })
 .catch(err => {
         console.log(err)
@@ -87,14 +90,14 @@ books.post('/', (req, res) => {
 
 //Delete Route
 books.delete('/:id', (req, res) => {
-    res.json({
-
-    })
+    Book.findByIdAndDelete(req.params.id)
+        .then(() => {
+            res.send('Delete was successful')
+        })
     .catch(err => {
         console.log(err)
         res.render('error404')
     })
-
 })
 
 module.exports = books
